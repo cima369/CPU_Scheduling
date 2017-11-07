@@ -224,19 +224,51 @@ public class CPUScheduler {
 	 */
 	public void RoundRobin() {
 		
+		
+		//Implement time quantum. 
 		int i = 0;
 		int store = 0;
+		int size = 0;
+		int burts_times[] = new int[size]; 
+		int quantum_times[] = new int[size];
+		
+		
+		// BT - Burst Time  TQ - time quantum 
+		//time quantum is the amount of time that the specific process will be executed for. 
+		//every process is given time quantum
+		
+		if(burts_times[i] < quantum_times[i])
+		{
+			//if yes the execute till completion
+		}
+		else
+		{
+			//if no execute for time quantum
+			//TQ expires
+			//check that process execution is completed
+			// if completed then terminate
+			// if not completed the go back to ready state
+
+		}
+		
+		
+		
+		
 		
 		while (Process[i][0] != null) {
-			//
-			setProcess(Process[i][0], 1); // Ready
+			setProcess(Process[i][0], 1); // Ready state
 
 			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
 				setProcess(Process[i][0], 2); // Running
+				store += Integer.parseInt(Process[i][2]);
 			}
 			
-			else if(Process[i][0] != Process[i - 1][0]){//current process 
+			else if(Process[i][0] != Process[i - 1][0]){
+				
+				RoundRobinSchedule[i][0] = Process[i-1][0];
+				RoundRobinSchedule[i][1] = Integer.toString(store);
 				setProcess(Process[i - 1][0], 5); // Terminated
+				store = Integer.parseInt(Process[i][2]);	
 			}
 			
 			i++;
