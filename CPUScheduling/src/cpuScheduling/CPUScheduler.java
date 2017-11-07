@@ -12,12 +12,16 @@ public class CPUScheduler {
 	public String[][] SJF = new String[9000][2];
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
+	public String[][] RoundRobinSchedule = new String[9000][2];
+	
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
 	 * dimension array Input(process) in the format written in the document: (1)
 	 * CPU_Time (2) I/O_Time (3) Process_Priority -> only needed when Priority
 	 * Scheduling is applied. Input(value) written in numbers(integer)
+	 * 
+	 * 
 	 */
 
 	public void addProcess(String name, String processType, String value) {
@@ -203,10 +207,40 @@ public class CPUScheduler {
 	}
 
 	/*
-	 * Preemptive Round-Robin (RR) Scheduling
+	 *  Preemptive Round-Robin (RR) Scheduling
+	 * 
+	 *  Round Robin is the preemptive process scheduling algorithm.
+	 *  Each process is provided a fix time to execute, it is called a quantum.
+	 *	Once a process is executed for a given time period, it is preempted and other process executes for a given time period.
+	 *	Context switching is used to save states of preempted processes.
+	 
+	 *  Process[i][0] = name;
+	 *  Process[i][1] = processType;
+	 *  Process[i][2] = value;
+	 * 
+	 *  Integer 1 stand for New, 2 stands for Running, 3 stand
+	 *  for Ready, 4 stands for Waiting for I/O, and 5 stand for terminated
+	 * 
 	 */
-	public void rr() {
+	public void RoundRobin() {
+		
+		int i = 0;
+		int store = 0;
+		
+		while (Process[i][0] != null) {
+			//
+			setProcess(Process[i][0], 1); // Ready
 
+			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
+				setProcess(Process[i][0], 2); // Running
+			}
+			
+			else if(Process[i][0] != Process[i - 1][0]){//current process 
+				setProcess(Process[i - 1][0], 5); // Terminated
+			}
+			
+			i++;
+		}
 	}
 
 	/*
