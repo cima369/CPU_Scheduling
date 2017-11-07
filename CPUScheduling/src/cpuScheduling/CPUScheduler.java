@@ -229,10 +229,10 @@ public class CPUScheduler {
 		int i = 0;
 		int store = 0;
 		int size = 0;
-		int burts_times[] = new int[size]; 
+		int burst_times[] = new int[size]; 
 		int quantum_times[] = new int[size];
 		
-		burts_times[0] = 10;
+		burst_times[0] = 10;
 		quantum_times[0] = 15;
 		
 		
@@ -241,31 +241,31 @@ public class CPUScheduler {
 		//time quantum is the amount of time that the specific process will be executed for. 
 		//every process is given time quantum
 		
-		
 		while (Process[i][0] != null) {
 			setProcess(Process[i][0], 1); // Ready state
 			
 			//YES
-			if (burts_times[i] < quantum_times[i]) {
+			if (burst_times[i] < quantum_times[i]) {
 				// if yes then execute till completion
 				   setProcess(Process[i][0], 2);  //running
+				   
+				   runProcess(i,burst_times[i]); //process i is executed for the amount specified in the burst
 
-					//execute until completetion
+					//execute until completion
 					RoundRobinSchedule[i][0] = Process[i-1][0];
 					RoundRobinSchedule[i][1] = Integer.toString(store);
 					setProcess(Process[i - 1][0], 5); // Terminated
-
 			} 
 			//NO
 			else 
 			{
-				// if no execute for time quantum
-				
+				// if no, execute for time quantum
 				//run for quantum_times[i] amount of time
+				// TQ expires?
+				setProcess(Process[i][0], 2);  //running
+				runProcess(i,burst_times[i]); //process i is executed for 10ms
 				
-				// TQ expires
 				// check that process execution is completed
-				
 				// if completed then terminate
 				if(true)
 				{
@@ -273,8 +273,6 @@ public class CPUScheduler {
 					RoundRobinSchedule[i][1] = Integer.toString(store);
 					setProcess(Process[i - 1][0], 5); // Terminated
 				}
-				
-				 setProcess(Process[i][0], 2);  //running
 				
 				// if not completed the go back to ready state
 				if(false)
@@ -318,5 +316,14 @@ public class CPUScheduler {
 	 */
 	public void multiFeedQue() {
 
+	}
+	
+	/* 
+	 * This simulates the running of the process. 
+	 * 
+	 */
+	public void runProcess(int id, double time)
+	{
+		//process by id is executed  for time amount of time. 
 	}
 }
