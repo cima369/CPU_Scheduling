@@ -274,14 +274,12 @@ public class CPUScheduler {
 					setProcess(Process[i - 1][0], 5); // Terminated
 				}
 				
+				 setProcess(Process[i][0], 2);  //running
+				
 				// if not completed the go back to ready state
 				if(false)
 				{
-					//since not completed yet, we go back to ready state
-					 setProcess(Process[i][0], 2);  //running
-					 
-					 
-					
+					//went back to ready state
 					setProcess(Process[i][0], 1); // Ready state
 				}
 				
