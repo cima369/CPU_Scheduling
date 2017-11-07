@@ -248,6 +248,7 @@ public class CPUScheduler {
 			//YES
 			if (burts_times[i] < quantum_times[i]) {
 				// if yes then execute till completion
+				   setProcess(Process[i][0], 2);  //running
 
 					//execute until completetion
 					RoundRobinSchedule[i][0] = Process[i-1][0];
@@ -260,11 +261,30 @@ public class CPUScheduler {
 			{
 				// if no execute for time quantum
 				
+				//run for quantum_times[i] amount of time
+				
 				// TQ expires
 				// check that process execution is completed
+				
 				// if completed then terminate
+				if(true)
+				{
+					RoundRobinSchedule[i][0] = Process[i-1][0];
+					RoundRobinSchedule[i][1] = Integer.toString(store);
+					setProcess(Process[i - 1][0], 5); // Terminated
+				}
+				
 				// if not completed the go back to ready state
-
+				if(false)
+				{
+					//since not completed yet, we go back to ready state
+					 setProcess(Process[i][0], 2);  //running
+					 
+					 
+					
+					setProcess(Process[i][0], 1); // Ready state
+				}
+				
 			}
 		}
 		
