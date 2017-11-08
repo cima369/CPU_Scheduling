@@ -13,7 +13,7 @@ public class CPUScheduler {
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
 	public String[][] RoundRobinSchedule = new String[9000][2];
-	
+
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
@@ -201,11 +201,54 @@ public class CPUScheduler {
 
 	/*
 	 * Preemptive Priority Scheduling
+	 * 
+	 *  Waiting Time (Waiting time – Arrival Time)
+	 *  Turning Time ((Waiting time – Arrival Time)+Burst Time)
+	 *  
 	 */
 	public void priority() {
-
+		
+		int size = 3; //number of processes
+		
+		//[burst_time][arrival time][priority]
+		int[][] ProcessPriority = new int[100][4];
+		int[] Waiting_Time = new int[100];
+		int[] Turning_Time = new int[100];
+		int Average_Waiting_Time = 0;
+		int Average_Turning_Time = 0;
+		
+		
+		ProcessPriority[0][0] = 3; 
+		ProcessPriority[0][1] = 0; 
+		ProcessPriority[0][2] = 3; 
+		
+		ProcessPriority[1][0] = 2; 
+		ProcessPriority[1][1] = 1; 
+		ProcessPriority[1][2] = 2; 
+		
+		ProcessPriority[2][0] = 1; 
+		ProcessPriority[2][1] = 2; 
+		ProcessPriority[2][2] = 4; 
+		
+		ProcessPriority[3][0] = 1; 
+		ProcessPriority[3][1] = 3; 
+		ProcessPriority[3][2] = 2; 
+		
+		
+		for(int x = 0; x < size;x++)
+		{
+			Waiting_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1])) ;
+			Turning_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1]) +(ProcessPriority[x][0])) ;
+			
+			Average_Waiting_Time += Average_Waiting_Time + Waiting_Time[x];
+			Average_Turning_Time += Average_Turning_Time + Turning_Time[x];
+		}
+		
+		Average_Waiting_Time = Average_Waiting_Time / size;
+		Average_Turning_Time = Average_Turning_Time / size;
 	}
 
+	
 	/*
 	 *  Preemptive Round-Robin (RR) Scheduling
 	 * 
@@ -305,13 +348,40 @@ public class CPUScheduler {
 	 * Multilevel Queue Scheduling
 	 */
 	public void multiQue() {
-
+		
 	}
 
 	/*
 	 * Multilevel Feedback Queue Scheduling
 	 */
 	public void multiFeedQue() {
+
+		/*
+		 * Loop:
+    IF process exists in blocking queue:
+        Work on removing each process from blocking queue in FCFS basis
+        When a process is removed, add it back to the highest priority cpu queue
+    
+    Move from top priority cpu queue to lowest cpu priority queue until we find a process
+    IF a process is found:
+        work on process until end of timeslice:
+            do work
+            IF the process becomes blocked:
+                remove it from the cpu queue
+                place it on the blocked queue
+                restart the timeslice with a new process
+
+        IF the end of the timeslice has been reached:
+            remove the process from the top of the queue
+            IF the process is not finished:
+                IF process is already in lowest priority queue:
+                    add process to back of queue
+                ELSE:
+                    add the process to the back of the next lower priority queue
+		 * 
+		 * 
+		 * 
+		 */
 
 	}	
 }
