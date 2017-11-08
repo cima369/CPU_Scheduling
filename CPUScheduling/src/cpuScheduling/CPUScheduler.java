@@ -194,9 +194,19 @@ public class CPUScheduler {
 
 	/*
 	 * Non-preemptive Priority Scheduling
+	 * 
+	 * 
+	 *  Processes are dispatched in a FIFO manner but are given a limited amount of time called quantum or time-slice.
+	 *	If the process is not able to execute completely in given quantum time then the process is preempted and is placed at the back of the ready list.
+	 *	Now CPU is given to the next process in ready state.
+	 *	Same steps goes until all the processes are finished.
+	 * 
+	 * 
 	 */
 	public void nonPrePriority() {
 
+		
+		
 	}
 
 	/*
@@ -259,7 +269,7 @@ public class CPUScheduler {
 	           ProcessPriority[i][0]=ProcessPriority[position][0];
 	           ProcessPriority[position][0]=tmp;
 	    
-	           //arival time
+	           //arrival time
 	           tmp=ProcessPriority[i][1];
 	           ProcessPriority[i][1]=ProcessPriority[position][1];
 	           ProcessPriority[position][1]=tmp;;
