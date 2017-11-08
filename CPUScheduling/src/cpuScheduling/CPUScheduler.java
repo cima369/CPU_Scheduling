@@ -246,7 +246,7 @@ public class CPUScheduler {
 				// if yes then execute till completion
 				   setProcess(Process[i][0], 2);  //running
 				   
-				   runProcess(i,burst_times[i]); //process i is executed for the amount specified in the burst
+				   //runProcess(i,burst_times[i]); //process i is executed for the amount specified in the burst
 
 					//execute until completion
 					RoundRobinSchedule[i][0] = Process[i-1][0];
@@ -260,7 +260,7 @@ public class CPUScheduler {
 				//run for quantum_times[i] amount of time
 				// TQ expires?
 				setProcess(Process[i][0], 2);  //running
-				runProcess(i,burst_times[i]); //process i is executed for 10ms
+				//runProcess(i,burst_times[i]); //process i is executed for 10ms
 				
 				// check that process execution is completed
 				// if completed then terminate
