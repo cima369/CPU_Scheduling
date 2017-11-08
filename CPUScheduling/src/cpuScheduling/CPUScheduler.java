@@ -238,20 +238,7 @@ public class CPUScheduler {
 		ProcessPriority[3][1] = 3; 
 		ProcessPriority[3][2] = 2; 
 		
-		
-		for(int x = 0; x < size;x++)
-		{
-			Waiting_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1])) ;
-			Turning_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1]) +(ProcessPriority[x][0])) ;
-			
-			Average_Waiting_Time += Average_Waiting_Time + Waiting_Time[x];
-			Average_Turning_Time += Average_Turning_Time + Turning_Time[x];
-		}
-		
-		Average_Waiting_Time = Average_Waiting_Time / size;
-		Average_Turning_Time = Average_Turning_Time / size;
-		
-		
+
 		int tmp = 0;
 	    for(int i=0;i<size;i++)
 	    {
@@ -277,6 +264,24 @@ public class CPUScheduler {
 	           ProcessPriority[i][1]=ProcessPriority[position][1];
 	           ProcessPriority[position][1]=tmp;;
 	    }
+	    
+	    
+		
+		for(int x = 0; x < size;x++)
+		{
+			if(x == 0)
+			{
+				Waiting_Time[0] = 0;
+			}
+			Waiting_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1])) ;
+			Turning_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1]) +(ProcessPriority[x][0])) ;
+			
+			Average_Waiting_Time += Average_Waiting_Time + Waiting_Time[x];
+			Average_Turning_Time += Average_Turning_Time + Turning_Time[x];
+		}
+		
+		Average_Waiting_Time = Average_Waiting_Time / size;
+		Average_Turning_Time = Average_Turning_Time / size;
 		
 	    
 	}
