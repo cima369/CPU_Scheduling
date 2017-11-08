@@ -217,6 +217,10 @@ public class CPUScheduler {
 		int Average_Waiting_Time = 0;
 		int Average_Turning_Time = 0;
 		
+		//
+		
+		int position;
+		
 		
 		ProcessPriority[0][0] = 3; 
 		ProcessPriority[0][1] = 0; 
@@ -246,6 +250,35 @@ public class CPUScheduler {
 		
 		Average_Waiting_Time = Average_Waiting_Time / size;
 		Average_Turning_Time = Average_Turning_Time / size;
+		
+		
+		int tmp = 0;
+	    for(int i=0;i<size;i++)
+	    {
+	    	   position=i;
+	           for(int j=i+1;j<size;j++)
+	           {
+	               if(ProcessPriority[j][2]<ProcessPriority[position][2])
+	                   position=j;
+	           }
+	    
+	           //priority
+	           tmp=ProcessPriority[i][2];
+	           ProcessPriority[i][2]=ProcessPriority[position][2];
+	           ProcessPriority[position][2]=tmp;
+	    
+	           //Burst time of process
+	           tmp=ProcessPriority[i][0];
+	           ProcessPriority[i][0]=ProcessPriority[position][0];
+	           ProcessPriority[position][0]=tmp;
+	    
+	           //arival time
+	           tmp=ProcessPriority[i][1];
+	           ProcessPriority[i][1]=ProcessPriority[position][1];
+	           ProcessPriority[position][1]=tmp;;
+	    }
+		
+	    
 	}
 
 	
