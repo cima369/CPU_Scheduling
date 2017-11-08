@@ -223,8 +223,7 @@ public class CPUScheduler {
 	 * 
 	 */
 	public void RoundRobin() {
-		
-		
+
 		//Implement time quantum. 
 		int i = 0;
 		int store = 0;
@@ -234,8 +233,6 @@ public class CPUScheduler {
 		
 		burst_times[0] = 10;
 		quantum_times[0] = 15;
-		
-		
 		
 		// BT - Burst Time  TQ - time quantum 
 		//time quantum is the amount of time that the specific process will be executed for. 
@@ -316,14 +313,5 @@ public class CPUScheduler {
 	 */
 	public void multiFeedQue() {
 
-	}
-	
-	/* 
-	 * This simulates the running of the process. 
-	 * 
-	 */
-	public void runProcess(int id, double time)
-	{
-		//process by id is executed  for time amount of time. 
-	}
+	}	
 }
