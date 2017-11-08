@@ -68,6 +68,49 @@ public class CPUScheduler {
 	}
 
 	/*
+	 * runProcess method showing the status of each process when it is run within the schedule
+	 */
+	
+	public void runProcess(String Schedule) {
+		int i = 0;
+		if (Schedule == "nonPreSJF") {
+			while (true) {
+				setProcess(nonPreSJF[i][0], 1); // Ready
+				if ((i > 0) && nonPreSJF[i - 1][0] != null) {
+					setProcess(nonPreSJF[i - 1][0], 5); // Terminate the process
+														// before it starts
+														// another
+				}
+				setProcess(nonPreSJF[i][0], 2); // Running
+				i++;
+				if (nonPreSJF[i][0] != null) {
+					break;
+				}
+			}
+			if (Schedule == "SJF") {
+				int j = 0;
+				while (true) {
+					setProcess(SJF[j - 1][0], 1); // Ready
+					if ((j > 0) && (SJF[j - 1] != null)) {
+						setProcess(nonPreSJF[j - 1][0], 4); // Waiting
+					}
+					setProcess(SJF[i][0], 2); // Running
+					j++;
+					if (SJF[i][0] != null) {
+						for (int z = 0; z <= j; z++) {
+							setProcess(SJF[j][0], 5); // Terminating all
+												      // processes
+						}
+						break;
+					}
+				}
+
+			}
+
+		}
+	}
+	
+	/*
 	 * Non-preemptive First-Come, First-Served (FCFS) Scheduling. In the order
 	 * of input the processes will be processed in an orderly fashion. Starting
 	 * from 1st input process to the lastly placed process.
