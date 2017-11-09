@@ -110,13 +110,17 @@ public class CPUScheduler {
 		int store = 0;
 		while (Process[i][0] != null) { // placing values into the schedule
 										// first
+			if((i==0)&&(Process[i][1] != "Process_Priority")){
+				store += Integer.parseInt(Process[i][2]);
+			}
 			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
 				store += Integer.parseInt(Process[i][2]);
-			} else if (Process[i][0] != Process[i - 1][0]) {
+			} else if ((i>0)&&Process[i][0] != Process[i - 1][0]) {
 				nonPreSJF[i][0] = Process[i - 1][0];
 				nonPreSJF[i][1] = Integer.toString(store);
 				store = Integer.parseInt(Process[i][2]);
 			}
+			i++;
 		}
 		i = 0;
 		int count = 0;
@@ -161,13 +165,17 @@ public class CPUScheduler {
 		int store = 0;
 		while (Process[i][0] != null) { // placing values into the schedule
 										// first
+			if((i==0)&&(Process[i][1] != "Process_Priority")){
+				store += Integer.parseInt(Process[i][2]);
+			}
 			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
 				store += Integer.parseInt(Process[i][2]);
-			} else if (Process[i][0] != Process[i - 1][0]) {
+			} else if ((i>0)&&Process[i][0] != Process[i - 1][0]) {
 				SJF[i][0] = Process[i - 1][0];
 				SJF[i][1] = Integer.toString(store);
 				store = Integer.parseInt(Process[i][2]);
 			}
+			i++;
 		}
 		i = 0;
 		int count = 0;
@@ -533,18 +541,31 @@ public class CPUScheduler {
 
 	/*
 	 * Multilevel Queue Scheduling
+	 * 	
 	 */
-	public void multiQue(int timeUnit) {
+	public void multiQue(int timeLimit) {
 		int i = 0;
 		int store = 0;
 		while (Process[i][0] != null) { // placing values into the schedule
 										// first
+			if((i==0)&&(Process[i][1] != "Process_Priority")){
+				store += Integer.parseInt(Process[i][2]);
+			}
 			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
 				store += Integer.parseInt(Process[i][2]);
-			} else if (Process[i][0] != Process[i - 1][0]) {
+			} else if ((i>0)&& (Process[i][0] != Process[i - 1][0])) {
 				MultiQue[i][0] = Process[i - 1][0];
 				MultiQue[i][1] = Integer.toString(store);
 				store = Integer.parseInt(Process[i][2]);
+			}
+			i++;
+		}
+		
+		for(int z =0; z<=i; z++){	// Separating them into two Queues 
+			if (Integer.parseInt(MultiQue[z][0]) > timeLimit){
+				MQBackground[z][0] =  MultiQue[z][0];
+			} else if (Integer.parseInt(MultiQue[z][0]) <= timeLimit){
+				MQForeground[z][0] = MultiQue [z][0];
 			}
 		}
 	}
