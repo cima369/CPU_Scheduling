@@ -242,7 +242,7 @@ public class CPUScheduler {
 	
 	public void runSJF(String Schedule) {
 		if (Schedule == "nonPreSJF") {
-			nonPreSJF();
+			nonPreSJF();  //make the schedule first
 			int i = 0;
 			while (true) {
 				setProcess(nonPreSJF[i][0], 1); // Ready
@@ -258,7 +258,7 @@ public class CPUScheduler {
 				}
 			}
 			if (Schedule == "SJF") {
-				SJF();
+				SJF(); // make the schedule first
 				int j = 0;
 				while (true) {
 					setProcess(SJF[j - 1][0], 1); // Ready
