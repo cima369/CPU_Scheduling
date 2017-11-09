@@ -14,8 +14,14 @@ public class CPUScheduler {
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
 	public String[][] RoundRobinSchedule = new String[9000][2];
+<<<<<<< HEAD
 	private int[][] processPriorities;
 
+=======
+	public String[][] MultiQue = new String [9000][2];
+	public String[][] MQBackground = new String [9000][2];
+	public String[][] MQForeground = new String [9000][2];
+>>>>>>> c10e1af620f1c45b60883e69f816fb4dd39c3dde
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
@@ -66,49 +72,6 @@ public class CPUScheduler {
 		} else {
 			Type.remove(name);
 			Type.put(name, type);
-		}
-	}
-
-	/*
-	 * runProcess method showing the status of each process when it is run within the schedule
-	 */
-	
-	public void runProcess(String Schedule) {
-		int i = 0;
-		if (Schedule == "nonPreSJF") {
-			while (true) {
-				setProcess(nonPreSJF[i][0], 1); // Ready
-				if ((i > 0) && nonPreSJF[i - 1][0] != null) {
-					setProcess(nonPreSJF[i - 1][0], 5); // Terminate the process
-														// before it starts
-														// another
-				}
-				setProcess(nonPreSJF[i][0], 2); // Running
-				i++;
-				if (nonPreSJF[i][0] != null) {
-					break;
-				}
-			}
-			if (Schedule == "SJF") {
-				int j = 0;
-				while (true) {
-					setProcess(SJF[j - 1][0], 1); // Ready
-					if ((j > 0) && (SJF[j - 1] != null)) {
-						setProcess(nonPreSJF[j - 1][0], 4); // Waiting
-					}
-					setProcess(SJF[i][0], 2); // Running
-					j++;
-					if (SJF[i][0] != null) {
-						for (int z = 0; z <= j; z++) {
-							setProcess(SJF[j][0], 5); // Terminating all
-												      // processes
-						}
-						break;
-					}
-				}
-
-			}
-
 		}
 	}
 	
@@ -237,6 +200,56 @@ public class CPUScheduler {
 		}
 	}
 
+	/*
+	 * runSJF method showing the status of each process when it is run within the schedule
+	 * In place to show the difference between preemptive and non preemptive shortest job
+	 * first Scheduling
+	 */
+	
+	public void runSJF(String Schedule) {
+		if (Schedule == "nonPreSJF") {
+			nonPreSJF();
+			int i = 0;
+			while (true) {
+				setProcess(nonPreSJF[i][0], 1); // Ready
+				if ((i > 0) && nonPreSJF[i - 1][0] != null) {
+					setProcess(nonPreSJF[i - 1][0], 5); // Terminate the process
+														// before it starts
+														// another
+				}
+				setProcess(nonPreSJF[i][0], 2); // Running
+				i++;
+				if (nonPreSJF[i][0] != null) {
+					break;
+				}
+			}
+			if (Schedule == "SJF") {
+				SJF();
+				int j = 0;
+				while (true) {
+					setProcess(SJF[j - 1][0], 1); // Ready
+					if ((j > 0) && (SJF[j - 1] != null)) {
+						setProcess(nonPreSJF[j - 1][0], 4); // Waiting
+					}
+					setProcess(SJF[i][0], 2); // Running
+					j++;
+					if (SJF[i][0] != null) {
+						for (int z = 0; z <= j; z++) {
+							setProcess(SJF[j][0], 5); // Terminating all
+												      // processes
+						}
+						break;
+					}
+				}
+
+			}
+			else {
+				System.out.println("Not nonPreSJF or SJF");
+			}
+
+		}
+	}
+	
 	/*
 	 * Non-preemptive Priority Scheduling
 	 * 
@@ -524,8 +537,19 @@ public class CPUScheduler {
 	/*
 	 * Multilevel Queue Scheduling
 	 */
-	public void multiQue() {
-		
+	public void multiQue(int timeUnit) {
+		int i = 0;
+		int store = 0;
+		while (Process[i][0] != null) { // placing values into the schedule
+										// first
+			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
+				store += Integer.parseInt(Process[i][2]);
+			} else if (Process[i][0] != Process[i - 1][0]) {
+				MultiQue[i][0] = Process[i - 1][0];
+				MultiQue[i][1] = Integer.toString(store);
+				store = Integer.parseInt(Process[i][2]);
+			}
+		}
 	}
 
 	/*
