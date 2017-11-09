@@ -66,49 +66,6 @@ public class CPUScheduler {
 			Type.put(name, type);
 		}
 	}
-
-	/*
-	 * runProcess method showing the status of each process when it is run within the schedule
-	 */
-	
-	public void runProcess(String Schedule) {
-		int i = 0;
-		if (Schedule == "nonPreSJF") {
-			while (true) {
-				setProcess(nonPreSJF[i][0], 1); // Ready
-				if ((i > 0) && nonPreSJF[i - 1][0] != null) {
-					setProcess(nonPreSJF[i - 1][0], 5); // Terminate the process
-														// before it starts
-														// another
-				}
-				setProcess(nonPreSJF[i][0], 2); // Running
-				i++;
-				if (nonPreSJF[i][0] != null) {
-					break;
-				}
-			}
-			if (Schedule == "SJF") {
-				int j = 0;
-				while (true) {
-					setProcess(SJF[j - 1][0], 1); // Ready
-					if ((j > 0) && (SJF[j - 1] != null)) {
-						setProcess(nonPreSJF[j - 1][0], 4); // Waiting
-					}
-					setProcess(SJF[i][0], 2); // Running
-					j++;
-					if (SJF[i][0] != null) {
-						for (int z = 0; z <= j; z++) {
-							setProcess(SJF[j][0], 5); // Terminating all
-												      // processes
-						}
-						break;
-					}
-				}
-
-			}
-
-		}
-	}
 	
 	/*
 	 * Non-preemptive First-Come, First-Served (FCFS) Scheduling. In the order
@@ -235,6 +192,56 @@ public class CPUScheduler {
 		}
 	}
 
+	/*
+	 * runProcess method showing the status of each process when it is run within the schedule
+	 * In place to show the difference between preemptive and non preemptive shortest job
+	 * first Scheduling
+	 */
+	
+	public void runSJF(String Schedule) {
+		if (Schedule == "nonPreSJF") {
+			nonPreSJF();
+			int i = 0;
+			while (true) {
+				setProcess(nonPreSJF[i][0], 1); // Ready
+				if ((i > 0) && nonPreSJF[i - 1][0] != null) {
+					setProcess(nonPreSJF[i - 1][0], 5); // Terminate the process
+														// before it starts
+														// another
+				}
+				setProcess(nonPreSJF[i][0], 2); // Running
+				i++;
+				if (nonPreSJF[i][0] != null) {
+					break;
+				}
+			}
+			if (Schedule == "SJF") {
+				SJF();
+				int j = 0;
+				while (true) {
+					setProcess(SJF[j - 1][0], 1); // Ready
+					if ((j > 0) && (SJF[j - 1] != null)) {
+						setProcess(nonPreSJF[j - 1][0], 4); // Waiting
+					}
+					setProcess(SJF[i][0], 2); // Running
+					j++;
+					if (SJF[i][0] != null) {
+						for (int z = 0; z <= j; z++) {
+							setProcess(SJF[j][0], 5); // Terminating all
+												      // processes
+						}
+						break;
+					}
+				}
+
+			}
+			else {
+				System.out.println("Not nonPreSJF or SJF");
+			}
+
+		}
+	}
+	
 	/*
 	 * Non-preemptive Priority Scheduling
 	 * 
