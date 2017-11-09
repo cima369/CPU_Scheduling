@@ -1,11 +1,38 @@
 package cpuScheduling;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 public class CPUScheduler {
 
+	public class ProcessData {
+		public int p;
+		public int age;
+		public int quantumtime;
+		public int arrivaltime;
+
+		ProcessData(int p, int arrivaltime,
+			int quantumtime, int age) {
+			this.p = p;
+			this.age = age;
+			this.arrivaltime = arrivaltime;
+			this.quantumtime = quantumtime;
+			
+		}
+	}
+	
+	LinkedList<ProcessData> multiLevelFeedbackQueue = new LinkedList<ProcessData>();
+	LinkedList<ProcessData> q1 = new LinkedList<ProcessData>();
+	LinkedList<ProcessData> q2 = new LinkedList<ProcessData>();
+	LinkedList<ProcessData> q3 = new LinkedList<ProcessData>();
+	LinkedList<Integer> creation_time = new LinkedList<Integer>();
+	LinkedList<Integer> start_time = new LinkedList<Integer>();
+	LinkedList<Integer> execution_time = new LinkedList<Integer>();
+	LinkedList<Integer> termination_time = new LinkedList<Integer>();
+	
+	
+	
 	private String[][] Process = new String[9000][3];
 	private Map<String, Integer> Type = new HashMap<String, Integer>();
 	public String[][] fcfs = new String[9000][2];
@@ -19,6 +46,8 @@ public class CPUScheduler {
 	public String[][] MQBackground = new String [9000][2];
 	public String[][] MQForeground = new String [9000][2];
 
+	
+	
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
@@ -572,97 +601,100 @@ public class CPUScheduler {
 
 	/*
 	 * Multilevel Feedback Queue Scheduling
-	 *  [burst][arrival][priority][q]
-	 *  [0]    [1]      [2]       [3]
+	 * 
+	 * The multilevel feedback queue scheduling algorithm, in contrast, allows
+	 * a process to move between queues. The idea is to separate processes according
+	 * to the characteristics of their CPU bursts. If a process uses too much CPU time,
+	 * it will be moved to a lower-priority queue. This scheme leaves I/O-bound and
+	 * interactive processes in the higher-priority queues. In addition, a process that
+	 * waits too long in a lower-priority queue may be moved to a higher-priority
+	 * queue. This form of aging prevents starvation.
+	 * 
+	 * 
 	 */
 	public void multiFeedQue() {
-
-		// [burst][arrival][priority]
-		int multiFeedQue[][] = new int[100][4];
-		int c = 0;
-		int y;
 		
-		multiFeedQue[0][0] = 3; 
-		multiFeedQue[0][1] = 0; 
-		multiFeedQue[0][2] = 3; 
 		
-		multiFeedQue[1][0] = 2; 
-		multiFeedQue[1][1] = 1; 
-		multiFeedQue[1][2] = 2; 
+		int currentTime = 0;
 		
-		multiFeedQue[2][0] = 1; 
-		multiFeedQue[2][1] = 2; 
-		multiFeedQue[2][2] = 4; 
-		
-		multiFeedQue[3][0] = 1; 
-		multiFeedQue[3][1] = 3; 
-		multiFeedQue[3][2] = 2; 
-
-		int size = 4;
-		String[] tmp;
-		
-	      for(int u = 0; u < size; u++) 
-	      { 
-	            String o = Process[u][2]; 
-	            if(Process[u][2] == "0" || Process[u][2] == "1" || Process[u][2] == "2" || Process[u][2] == "3")
-	            {
-	            	Process[u][3] = "1";
-	            }
-	            else
-	            {
-	            	Process[u][3] = "2";
-	            }
-	            setProcess(Process[u][0], 4); // Ready state //false therefore waiting? 
-	      }
-		
-
-		int t = multiFeedQue[0][0];
-		for (y = 0; y < size; y++) {
-			for (c = y; c < size; c++) {
-				if (multiFeedQue[c][1] < t) {
-					setProcess(Process[c][0], 3); // Ready state
-				}
-			}
-
-			for (int i = y; i < size - 1; i++) {
-				for (int e = i + 1; e < size; e++) {
-					if (Process[i][0] == "3" && Process[e][0] == "3") {
-						if (Process[i][3] == "2" && Process[e][3] == "1") {
-							tmp = Process[i];
-							Process[i] = Process[e];
-							Process[e] = tmp;
-						}
-					}
-				}
+		while (true) {
+			if (multiLevelFeedbackQueue.size() == 0 && q1.size() == 0 && q2.size() == 0 && q3.size() == 0)
+				break;
+			
+			for (int i = 0; i < multiLevelFeedbackQueue.size(); i++) {
+				if (multiLevelFeedbackQueue.get(i).arrivaltime != currentTime)
+					continue;
+				q1.add(multiLevelFeedbackQueue.get(i));
+				new LinkedList<ProcessData>().add(multiLevelFeedbackQueue.get(i));
 			}
 			
-			for (c = y; c < size - 1; c++) {
-				for (int e = c + 1; e < size; e++) {
-					if (Process[c][0] == "3" && Process[e][0] == "3") {
-						if (Process[c][3] == "1" && Process[e][3] == "1") {
-							if (Integer.parseInt(Process[c][0]) > Integer.parseInt(Process[e][0])) {
-								tmp = Process[c];
-								Process[c] = Process[e];
-								Process[e] = tmp;
-							} else {
-								break;
-							}
+			//remove new processes from q1 
+			for (int i = 0; i >= new LinkedList<ProcessData>().size(); i++)
+				multiLevelFeedbackQueue.remove(new LinkedList<ProcessData>().get(i));
+			
+			//check on the q1
+			ProcessData currentProcess;
+			if (q1.size() != 0) {
+				currentProcess = q1.get(0);
+				
+				if (currentProcess.age < 8) {
+					if (currentProcess.quantumtime > 1) {
+						currentProcess.quantumtime = currentProcess.quantumtime - 1;
+						currentProcess.age = currentProcess.age + 1;
+						
+						if (currentProcess.age == 8) {
+							currentProcess.age = 0;
+							q2.add(currentProcess);
+							q1.remove(currentProcess);
+						}
+					} else {
+						q1.remove();
+						termination_time.set(currentProcess.p - 1, currentTime);
+					}
+				}
+				
+				if (currentProcess.age == 0)
+					start_time.set(currentProcess.p - 1, currentTime);
+				
+			}
+			//check q2
+			else if (q2.size() != 0) {
+				currentProcess = q2.get(0);
+				if (currentProcess.age < 16) {
+					if (currentProcess.quantumtime <= 1) {
+						q2.remove();
+						termination_time.set(currentProcess.p - 1, currentTime);
+					} 
+					else 
+					{
+						currentProcess.quantumtime = currentProcess.quantumtime - 1;
+						currentProcess.age = currentProcess.age + 1;
+						if (currentProcess.age == 16) {
+							currentProcess.age = 0;
+							q3.add(currentProcess);
+							q2.remove(currentProcess);
 						}
 					}
 				}
 			}
+			//check q3
+			else if (q3.size() != 0) {
+				currentProcess = q3.get(0);
 
+				if (currentProcess.quantumtime <= 1) {
+					q3.remove();
+					termination_time.set(currentProcess.p - 1, currentTime);
+				} else {
+					currentProcess.quantumtime = currentProcess.quantumtime - 1;
+				}
+			}
+			currentTime++;
 		}
 
-		t = t + Integer.parseInt(Process[y][0]); 
-		for(int o = c; o < size; o++) 
-        { 
-              if(Process[o][3] == "1") //ready
-              { 
-            	  setProcess(Process[o][0], 3); // Ready state  //waiting? 
-              } 
-        } 
-		
+		for (int i = 0; i < execution_time.size(); i++) {
+			int totalWaitingTime = termination_time.get(i) - (creation_time.get(i) + execution_time.get(i));
+			int totalTurnAroundTime = termination_time.get(i) - creation_time.get(i);
+			int totalResponseTime = start_time.get(i) - creation_time.get(i);
+		}
 	}
-
 }
