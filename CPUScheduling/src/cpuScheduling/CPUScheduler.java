@@ -13,7 +13,9 @@ public class CPUScheduler {
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
 	public String[][] RoundRobinSchedule = new String[9000][2];
-
+	public String[][] MultiQue = new String [9000][2];
+	public String[][] MQBackground = new String [9000][2];
+	public String[][] MQForeground = new String [9000][2];
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
@@ -533,8 +535,19 @@ public class CPUScheduler {
 	/*
 	 * Multilevel Queue Scheduling
 	 */
-	public void multiQue() {
-		
+	public void multiQue(int timeUnit) {
+		int i = 0;
+		int store = 0;
+		while (Process[i][0] != null) { // placing values into the schedule
+										// first
+			if ((i > 0) && (Process[i][0] == Process[i - 1][0]) && (Process[i][1] != "Process_Priority")) {
+				store += Integer.parseInt(Process[i][2]);
+			} else if (Process[i][0] != Process[i - 1][0]) {
+				MultiQue[i][0] = Process[i - 1][0];
+				MultiQue[i][1] = Integer.toString(store);
+				store = Integer.parseInt(Process[i][2]);
+			}
+		}
 	}
 
 	/*
