@@ -14,14 +14,11 @@ public class CPUScheduler {
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
 	public String[][] RoundRobinSchedule = new String[9000][2];
-<<<<<<< HEAD
 	private int[][] processPriorities;
-
-=======
 	public String[][] MultiQue = new String [9000][2];
 	public String[][] MQBackground = new String [9000][2];
 	public String[][] MQForeground = new String [9000][2];
->>>>>>> c10e1af620f1c45b60883e69f816fb4dd39c3dde
+
 
 	/*
 	 * Adding process in order of input and storing them as string in a two
