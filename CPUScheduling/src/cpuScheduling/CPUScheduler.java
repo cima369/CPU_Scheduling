@@ -2,6 +2,7 @@ package cpuScheduling;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class CPUScheduler {
 
@@ -13,6 +14,7 @@ public class CPUScheduler {
 	public String[][] NonPrePrioritySchedule = new String[9000][2];
 	public String[][] PrioritySchedule = new String[9000][2];
 	public String[][] RoundRobinSchedule = new String[9000][2];
+	private int[][] processPriorities;
 
 
 	/*
@@ -351,33 +353,30 @@ public class CPUScheduler {
 		
 		int size = 3; //number of processes
 		
-		//[burst_time][arrival time][priority]
-		int[][] ProcessPriority = new int[100][4];
+		processPriorities = new int[100][4];
 		int[] Waiting_Time = new int[100];
 		int[] Turning_Time = new int[100];
 		int Average_Waiting_Time = 0;
 		int Average_Turning_Time = 0;
 		
-		//
-		
+		//		
 		int position;
+
+		processPriorities[0][0] = 3; 
+		processPriorities[0][1] = 0; 
+		processPriorities[0][2] = 3; 
 		
+		processPriorities[1][0] = 2; 
+		processPriorities[1][1] = 1; 
+		processPriorities[1][2] = 2; 
 		
-		ProcessPriority[0][0] = 3; 
-		ProcessPriority[0][1] = 0; 
-		ProcessPriority[0][2] = 3; 
+		processPriorities[2][0] = 1; 
+		processPriorities[2][1] = 2; 
+		processPriorities[2][2] = 4; 
 		
-		ProcessPriority[1][0] = 2; 
-		ProcessPriority[1][1] = 1; 
-		ProcessPriority[1][2] = 2; 
-		
-		ProcessPriority[2][0] = 1; 
-		ProcessPriority[2][1] = 2; 
-		ProcessPriority[2][2] = 4; 
-		
-		ProcessPriority[3][0] = 1; 
-		ProcessPriority[3][1] = 3; 
-		ProcessPriority[3][2] = 2; 
+		processPriorities[3][0] = 1; 
+		processPriorities[3][1] = 3; 
+		processPriorities[3][2] = 2; 
 		
 
 		int tmp = 0;
@@ -386,24 +385,24 @@ public class CPUScheduler {
 	    	   position=i;
 	           for(int j=i+1;j<size;j++)
 	           {
-	               if(ProcessPriority[j][2]<ProcessPriority[position][2])
+	               if(processPriorities[j][2]<processPriorities[position][2])
 	                   position=j;
 	           }
 	    
 	           //priority
-	           tmp=ProcessPriority[i][2];
-	           ProcessPriority[i][2]=ProcessPriority[position][2];
-	           ProcessPriority[position][2]=tmp;
+	           tmp=processPriorities[i][2];
+	           processPriorities[i][2]=processPriorities[position][2];
+	           processPriorities[position][2]=tmp;
 	    
 	           //Burst time of process
-	           tmp=ProcessPriority[i][0];
-	           ProcessPriority[i][0]=ProcessPriority[position][0];
-	           ProcessPriority[position][0]=tmp;
+	           tmp=processPriorities[i][0];
+	           processPriorities[i][0]=processPriorities[position][0];
+	           processPriorities[position][0]=tmp;
 	    
 	           //arrival time
-	           tmp=ProcessPriority[i][1];
-	           ProcessPriority[i][1]=ProcessPriority[position][1];
-	           ProcessPriority[position][1]=tmp;;
+	           tmp=processPriorities[i][1];
+	           processPriorities[i][1]=processPriorities[position][1];
+	           processPriorities[position][1]=tmp;;
 	    }
 	    
 	    
@@ -414,8 +413,8 @@ public class CPUScheduler {
 			{
 				Waiting_Time[0] = 0;
 			}
-			Waiting_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1])) ;
-			Turning_Time[x] =((Waiting_Time[x]) - (ProcessPriority[x][1]) +(ProcessPriority[x][0])) ;
+			Waiting_Time[x] =((Waiting_Time[x]) - (processPriorities[x][1])) ;
+			Turning_Time[x] =((Waiting_Time[x]) - (processPriorities[x][1]) +(processPriorities[x][0])) ;
 			
 			Average_Waiting_Time += Average_Waiting_Time + Waiting_Time[x];
 			Average_Turning_Time += Average_Turning_Time + Turning_Time[x];
@@ -426,7 +425,6 @@ public class CPUScheduler {
 		
 	    
 	}
-
 	
 	/*
 	 *  Preemptive Round-Robin (RR) Scheduling
@@ -461,7 +459,7 @@ public class CPUScheduler {
 		//every process is given time quantum
 		
 		while (Process[i][0] != null) {
-			setProcess(Process[i][0], 1); // Ready state
+			setProcess(Process[i][0], 3); // Ready state
 			
 			//YES
 			if (burst_times[i] < quantum_times[i]) {
@@ -532,36 +530,97 @@ public class CPUScheduler {
 
 	/*
 	 * Multilevel Feedback Queue Scheduling
+	 *  [burst][arrival][priority][q]
+	 *  [0]    [1]      [2]       [3]
 	 */
 	public void multiFeedQue() {
 
-		/*
-		 * Loop:
-    IF process exists in blocking queue:
-        Work on removing each process from blocking queue in FCFS basis
-        When a process is removed, add it back to the highest priority cpu queue
-    
-    Move from top priority cpu queue to lowest cpu priority queue until we find a process
-    IF a process is found:
-        work on process until end of timeslice:
-            do work
-            IF the process becomes blocked:
-                remove it from the cpu queue
-                place it on the blocked queue
-                restart the timeslice with a new process
+		// [burst][arrival][priority]
+		int multiFeedQue[][] = new int[100][4];
+		int c = 0;
+		int y;
+		
+		multiFeedQue[0][0] = 3; 
+		multiFeedQue[0][1] = 0; 
+		multiFeedQue[0][2] = 3; 
+		
+		multiFeedQue[1][0] = 2; 
+		multiFeedQue[1][1] = 1; 
+		multiFeedQue[1][2] = 2; 
+		
+		multiFeedQue[2][0] = 1; 
+		multiFeedQue[2][1] = 2; 
+		multiFeedQue[2][2] = 4; 
+		
+		multiFeedQue[3][0] = 1; 
+		multiFeedQue[3][1] = 3; 
+		multiFeedQue[3][2] = 2; 
 
-        IF the end of the timeslice has been reached:
-            remove the process from the top of the queue
-            IF the process is not finished:
-                IF process is already in lowest priority queue:
-                    add process to back of queue
-                ELSE:
-                    add the process to the back of the next lower priority queue
-		 * 
-		 * 
-		 * 
-		 */
+		int size = 4;
+		String[] tmp;
+		
+	      for(int u = 0; u < size; u++) 
+	      { 
+	            String o = Process[u][2]; 
+	            if(Process[u][2] == "0" || Process[u][2] == "1" || Process[u][2] == "2" || Process[u][2] == "3")
+	            {
+	            	Process[u][3] = "1";
+	            }
+	            else
+	            {
+	            	Process[u][3] = "2";
+	            }
+	            setProcess(Process[u][0], 4); // Ready state //false therefore waiting? 
+	      }
+		
 
-	}	
+		int t = multiFeedQue[0][0];
+		for (y = 0; y < size; y++) {
+			for (c = y; c < size; c++) {
+				if (multiFeedQue[c][1] < t) {
+					setProcess(Process[c][0], 3); // Ready state
+				}
+			}
+
+			for (int i = y; i < size - 1; i++) {
+				for (int e = i + 1; e < size; e++) {
+					if (Process[i][0] == "3" && Process[e][0] == "3") {
+						if (Process[i][3] == "2" && Process[e][3] == "1") {
+							tmp = Process[i];
+							Process[i] = Process[e];
+							Process[e] = tmp;
+						}
+					}
+				}
+			}
+			
+			for (c = y; c < size - 1; c++) {
+				for (int e = c + 1; e < size; e++) {
+					if (Process[c][0] == "3" && Process[e][0] == "3") {
+						if (Process[c][3] == "1" && Process[e][3] == "1") {
+							if (Integer.parseInt(Process[c][0]) > Integer.parseInt(Process[e][0])) {
+								tmp = Process[c];
+								Process[c] = Process[e];
+								Process[e] = tmp;
+							} else {
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+		t = t + Integer.parseInt(Process[y][0]); 
+		for(int o = c; o < size; o++) 
+        { 
+              if(Process[o][3] == "1") //ready
+              { 
+            	  setProcess(Process[o][0], 3); // Ready state  //waiting? 
+              } 
+        } 
+		
+	}
 
 }
