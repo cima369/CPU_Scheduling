@@ -193,7 +193,7 @@ public class CPUScheduler {
 	}
 
 	/*
-	 * runProcess method showing the status of each process when it is run within the schedule
+	 * runSJF method showing the status of each process when it is run within the schedule
 	 * In place to show the difference between preemptive and non preemptive shortest job
 	 * first Scheduling
 	 */
